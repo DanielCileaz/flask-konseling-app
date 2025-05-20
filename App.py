@@ -2,7 +2,7 @@ import sqlite3
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, message="TypedStorage is deprecated")
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from collections import defaultdict, Counter
 from datetime import datetime, timedelta
@@ -10,20 +10,30 @@ import pytz
 import time
 from recommender import get_recommendation_with_emotion
 
-app = Flask(__name__)
+# Inisialisasi Flask
+app = Flask(__name__, static_folder='frontend')
 CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}}, supports_credentials=True)
 
-# Fungsi untuk mendapatkan koneksi database
+# ------------------ TAMBAHAN UNTUK HALAMAN LOGIN ------------------
+@app.route('/')
+def serve_login_page():
+    return send_from_directory('frontend', 'Login.html')
+
+@app.route('/<path:path>')
+def serve_static_files(path):
+    return send_from_directory('frontend', path)
+# ------------------------------------------------------------------
+
+# Fungsi koneksi database
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
 
-# Membuat tabel jika belum ada
+# Buat tabel jika belum ada
 with app.app_context():
     conn = get_db_connection()
     cursor = conn.cursor()
-
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +41,6 @@ with app.app_context():
             password TEXT NOT NULL
         )
     ''')
-
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS reports (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,7 +51,6 @@ with app.app_context():
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ''')
-
     conn.commit()
     conn.close()
 
