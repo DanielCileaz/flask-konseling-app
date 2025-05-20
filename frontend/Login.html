@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - E-MOOD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Mengatur body untuk memastikan konten di tengah */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Memastikan body memenuhi tinggi layar */
+            margin: 0;
+            background: #F5F5F5;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px; /* Membatasi lebar container */
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        /* E-MOOD Title */
+        .e-mood {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 48px;
+            color: #4A90E2;
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        /* Header Text */
+        .header-text {
+            font-weight: bold;
+            font-size: 15px;
+            color: #4A90E2;
+            margin-top: 20px;
+        }
+
+        /* Login Image */
+        .login-image {
+            width: 100%;
+            height: auto;
+            margin-top: 20px;
+            object-fit: contain; /* Menghindari gambar terdistorsi */
+        }
+
+        /* Input Fields */
+        .input-box {
+            width: 100%;
+            height: 38px;
+            background: #7B93F0;
+            border: none;
+            padding-left: 10px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            margin: 10px 0;
+            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+            color: white;
+            border-radius: 5px;
+        }
+
+        .input-box::placeholder {
+            color: white; /* Mengubah warna placeholder menjadi putih */
+        }
+
+        /* Button */
+        .login-btn {
+            width: auto; /* Ukuran tombol mengikuti panjang teks */
+            height: 40px;
+            padding: 0 20px; /* Menambahkan padding agar lebih proporsional */
+            background: #7B93F0;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .login-btn:hover {
+            background: #4A90E2;
+        }
+
+        /* Sign Up Link */
+        .signUp {
+            margin-top: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #7B93F0;
+        }
+
+        .signUp a {
+            color: #00B8D9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signUp a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsif untuk perangkat kecil */
+        @media (max-width: 600px) {
+            .e-mood {
+                font-size: 40px; /* Menyesuaikan ukuran font */
+            }
+
+            .login-image {
+                width: 60%; /* Menyesuaikan gambar */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="e-mood">E-MOOD</div>
+        <div class="header-text">Tell Your Day with E-Mood</div>
+
+        <img src="Login.png" alt="Login Image" class="login-image">
+
+        <!-- Form Login -->
+        <form id="loginForm" method="POST">
+            <input type="text" name="email" id="emailInput" placeholder="Username" class="input-box" required>
+            
+            <input type="password" name="password" id="passwordInput" placeholder="Password" class="input-box" required>
+            
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        
+        <div class="signUp">
+            Didn't have an account? <a href="register.html">Sign Up</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+        
+            const email = document.getElementById('emailInput').value.trim();
+            const password = document.getElementById('passwordInput').value.trim();
+        
+            // Validasi input tidak boleh kosong
+            if (!email || !password) {
+                alert("Email dan password tidak boleh kosong!");
+                return;
+            }
+        
+            try {
+                const response = await fetch('http://127.0.0.1:5000/login', {  
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+        
+                console.log("Response Status:", response.status);  // Debugging
+        
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log("Login Success:", result);  // Debugging
+                    alert(result.message);
+                    
+                    // Simpan data ke localStorage
+                    localStorage.setItem("isLoggedIn", "true");
+                    localStorage.setItem("user_email", email);  // Simpan email pengguna
+                    
+                    // Redirect ke halaman laporan
+                    window.location.href = "Laporan.html";  
+                } else {
+                    const errorResult = await response.json();
+                    console.log("Login Failed:", errorResult);  // Debugging
+                    alert(errorResult.error || "Login gagal, periksa kembali email dan password Anda.");
+                }
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                alert("Gagal terhubung ke server. Periksa koneksi internet atau coba lagi nanti.");
+            }
+        });        
+    </script>    
+    
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How's your day?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Montserrat:wght@400&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #F5F5F5;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            position: relative;
+            width: 390px;
+            background: #F5F5F5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .title {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 32px;
+            color: #4A90E2;
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            margin-top: 15px;  
+        }
+
+        .image {
+            width: 219px;
+            height: 260px;
+            margin-top: 10px;  
+        }
+
+        .text-box-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: #4A90E2;
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            margin-top: 10px;
+        }
+
+        .input-container {
+            width: 100%;
+            max-width: 297px;
+            height: 349px;
+            background: #7B93F0;
+            border: 1px solid #000000;
+            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .text-box {
+            width: 90%;
+            height: 80%;
+            background: #7B93F0;
+            border: none;
+            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            padding: 10px;
+            resize: none;
+        }
+
+        .send-button {
+            width: 147px;
+            height: 39px;
+            background: #7B93F0;
+            border-radius: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            color: white; /* Mengubah teks tombol menjadi putih */
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .send-button:hover {
+            background: #5a73c0;
+        }
+
+        .input-box::placeholder {
+            color: white; /* Mengubah warna placeholder menjadi putih */
+        }
+
+        .message {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            margin-top: 15px;
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        /* Responsif untuk perangkat kecil */
+        @media (max-width: 600px) {
+            .container {
+                width: 90%; /* Menyesuaikan lebar container */
+            }
+
+            .title {
+                font-size: 24px; /* Menyesuaikan ukuran font */
+            }
+
+            .image {
+                width: 150px; /* Menyesuaikan gambar */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="title">How's your day?</h1>
+        <img src="laporan.png" alt="Gambar Orang Berpikir" class="image">
+        <p class="text-box-label"><b>Write your feelings below!!!</b></p>
+        
+        <div class="input-container">
+            <textarea id="user-input" class="text-box"></textarea>
+        </div>
+        
+        <button class="send-button" onclick="sendMessage()">Send</button>
+
+        <p id="response-message" class="message"></p>
+    </div>
+
+    <script>
+        // Cek apakah user sudah login, kalau belum redirect ke login.html
+        if (!localStorage.getItem("isLoggedIn")) {
+            window.location.href = "login.html";
+        }
+    
+        function sendMessage() {
+            const text = document.getElementById("user-input").value.trim(); // Hilangkan spasi ekstra
+            const responseMessage = document.getElementById("response-message");
+            let user_email = localStorage.getItem("user_email");  // Ambil email dari localStorage
+            
+            if (!text) {
+                responseMessage.textContent = "Silakan isi perasaan Anda terlebih dahulu.";
+                responseMessage.classList.add("error");
+                return;
+            }
+    
+            // Pastikan email ada, jika tidak, berikan default value
+            if (!user_email) {
+                console.warn("⚠️ Email tidak ditemukan di localStorage, mengirim tanpa email.");
+                user_email = "guest@example.com"; // Default value jika userEmail tidak ada
+            }
+    
+            console.log("📡 Mengirim teks ke server:", { text, user_email }); // Debugging
+    
+            fetch("http://127.0.0.1:5000/send_message", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text, user_email: user_email }) 
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json()
+                        .then(err => { throw new Error(err.error || "Gagal mengirim data ke server"); })
+                        .catch(() => { throw new Error("Gagal mengurai JSON dari server"); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("✅ Respons dari server:", data); // Debugging
+                responseMessage.textContent = "Saran telah diterima!";
+                responseMessage.classList.remove("error");
+                responseMessage.style.color = "green";
+    
+                // Simpan saran ke localStorage untuk ditampilkan di Saran.html
+                localStorage.setItem("suggestion", data.suggestion);
+    
+                console.log("🔀 Pindah ke Saran.html...");
+                window.location.href = "Saran.html"; // Redirect langsung
+            })
+            .catch(error => {
+                console.error("❌ Error saat mengirim:", error.message);
+                responseMessage.textContent = error.message;
+                responseMessage.classList.add("error");
+            });
+        }
+    </script>
+    
+</body>
+</html>

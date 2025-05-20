@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - E-MOOD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Body styling */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #F5F5F5;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Container untuk semua konten */
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Title styling */
+        .title {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 50px;
+            color: #4A90E2;
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            margin-bottom: 20px;
+        }
+
+        /* Register text */
+        .register-text {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #4A90E2; /* Menambahkan warna biru pada teks */
+        }
+
+        /* Input styling */
+        .input-box {
+            width: 100%;
+            height: 40px;
+            margin-bottom: 15px;
+            padding-left: 40px; /* Space for icon */
+            font-size: 16px;
+            background: #7B93F0;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
+
+        .input-box::placeholder {
+            color: white;
+        }
+
+        /* Button styling */
+        .register-btn {
+            width: auto;
+            height: 40px;
+            background: #7B93F0;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .register-btn:hover {
+            background: #6A7BE0;
+        }
+
+        /* Back to login link */
+        .back-to-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-to-login a {
+            color: #00B8D9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Styling for form items inside container */
+        .form-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        /* Gambar */
+        .register-image {
+            width: 80%;
+            height: auto;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="title">E-MOOD</div>
+        <div class="register-text">Come on, create your account!!!</div>
+
+        <!-- Gambar register -->
+        <img src="register.png" alt="Register Image" class="register-image">
+
+        <!-- Form untuk registrasi -->
+        <form id="registerForm" method="POST">
+            <div class="form-container">
+                <input type="text" name="email" id="emailInput" placeholder="Username" class="input-box email" required>
+            </div>
+
+            <div class="form-container">
+                <input type="password" name="password" id="passwordInput" placeholder="Password" class="input-box password" required>
+            </div>
+
+            <div class="form-container">
+                <input type="password" name="confirmPassword" id="confirmPasswordInput" placeholder="Confirm Password" class="input-box confirm-password" required>
+            </div>
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+
+        <!-- Link kembali ke Login -->
+        <div class="back-to-login">
+            Already have an account? <a href="login.html">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", async function (event) {
+            event.preventDefault(); // Mencegah reload halaman
+        
+            const email = document.getElementById("emailInput").value.trim();
+            const password = document.getElementById("passwordInput").value;
+            const confirmPassword = document.getElementById("confirmPasswordInput").value;
+        
+            // Validasi input kosong
+            if (!email || !password || !confirmPassword) {
+                alert("Semua kolom harus diisi!");
+                return;
+            }
+        
+            // Validasi password cocok
+            if (password !== confirmPassword) {
+                alert("Password dan Confirm Password tidak cocok!");
+                return;
+            }
+        
+            try {
+                console.log("📡 Mengirim data registrasi:", { email }); // Debugging
+        
+                // Kirim data registrasi ke backend (Flask)
+                const response = await fetch("http://127.0.0.1:5000/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+        
+                if (!response.ok) {
+                    // Coba parsing JSON untuk mendapatkan pesan error
+                    const errorResult = await response.json().catch(() => null);
+                    throw new Error(errorResult?.error || "Terjadi kesalahan saat registrasi.");
+                }
+        
+                const result = await response.json();
+                alert(result.message); // Notifikasi berhasil
+        
+                // Simpan email user ke localStorage
+                localStorage.setItem("user_email", email);
+                console.log("✅ Email user tersimpan di localStorage:", localStorage.getItem("userEmail"));
+        
+                // Redirect ke login
+                window.location.href = "login.html";
+        
+            } catch (error) {
+                console.error("❌ Error saat registrasi:", error.message);
+                alert(error.message);
+            }
+        });        
+    </script>
+</body>
+</html>

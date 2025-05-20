@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Assistant</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Styling tetap sama, tidak berubah */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: #F5F5F5;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .container {
+            position: relative;
+            width: 500px;
+            background: #F5F5F5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-text {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 32px;
+            color: #4A90E2;
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            position: absolute;
+            top: 30px; /* Menempatkan teks di atas */
+            z-index: 2;
+        }
+        
+        .image1 {
+            width: 130px;
+            height: 141px;
+            background: url('Saran.png') no-repeat center/cover;
+            margin-top: 60px; /* Menambahkan ruang antara teks dan gambar */
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: transparent; /* Tidak ada background */
+            color: #4A90E2; /* Sesuaikan dengan warna aplikasi */
+            font-size: 24px; /* Ukuran icon */
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+            transition: color 0.3s ease;
+        }
+        
+        .logout-button:hover {
+            color: #357ABD; /* Warna saat hover */
+        }
+
+        .rectangle {
+            width: 90%;
+            max-width: 350px;
+            padding: 20px;
+            background: #7B93F0;
+            border-radius: 20px;
+            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+            margin: 10px;
+        }
+
+        .grafik-keseharian {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 250px;
+        }
+
+        .container-tombol {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 350px;
+            margin-top: 20px;
+        }
+
+        .cek-history, .tombol-back {
+            width: 120px;
+            height: 40px;
+            background-color: #4A90E2;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .cek-history:hover, .tombol-back:hover {
+            background-color: #357ABD;
+        }
+
+        @media (max-width: 600px) {
+            .welcome-text { font-size: 24px; }
+            .rectangle { width: 90%; }
+            .cek-history, .tombol-back { width: 100px; height: 35px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logout-button" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i> <!-- Icon logout -->
+        </div>
+        <div class="welcome-text"><b>Welcome back!!!</b></div> 
+        <div class="image1"></div>
+        
+        <!-- Grafik mood keseharian -->
+        <div class="rectangle">
+            <div class="grafik-keseharian">
+                <canvas id="chartKeseharian"></canvas>
+            </div>
+        </div>
+
+        <!-- Saran aktivitas -->
+        <div class="rectangle">
+            <div class="saran-kegiatan"></div>
+        </div>
+        
+        <div class="container-tombol">
+            <div class="tombol-back" onclick="goBack()">Back</div> 
+            <div class="cek-history" onclick="window.location.href='history.html';"><b>Your History</b></div>
+        </div>
+    </div>    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            console.log("📊 Memuat grafik keseharian...");
+
+            const today = new Date().toISOString().split('T')[0];
+            const lastVisitDate = localStorage.getItem('last_visit_date');
+
+            if (lastVisitDate !== today) {
+                console.log("🔄 Hari berganti, reset data lokal...");
+                localStorage.removeItem('suggestion');
+                localStorage.setItem('last_visit_date', today);
+            } else {
+                console.log("✅ Masih hari yang sama, tidak reset data.");
+            }
+
+            const userEmail = localStorage.getItem("user_email");
+            if (!userEmail) {
+                console.error("❌ User email tidak ditemukan di localStorage!");
+                document.querySelector(".saran-kegiatan").textContent = "Email pengguna tidak ditemukan.";
+                return;
+            }
+
+            try {
+                console.log(`📡 Mengambil data grafik untuk: ${userEmail}`);
+                const response = await fetch(`http://127.0.0.1:5000/get_chart_data?user_email=${encodeURIComponent(userEmail)}`);
+                const data = await response.json();
+
+                if (data.labels && data.values) {
+                    console.log("✅ Data grafik diterima:", data);
+                    const ctx = document.getElementById("chartKeseharian").getContext("2d");
+
+                    const colorMapping = {
+                        'positif': '#A3CEF5',
+                        'netral':  '#9BD8C2',
+                        'negatif': '#D1C4E9'
+                    };
+
+                    // Buat array baru hanya untuk label dan value yang nilainya > 0
+                    const filteredLabels = [];
+                    const filteredValues = [];
+                    const filteredColors = [];
+
+                    data.labels.forEach((label, index) => {
+                        const value = data.values[index];
+                        if (value > 0) {
+                            filteredLabels.push(label.charAt(0).toUpperCase() + label.slice(1)); // Kapital huruf pertama
+                            filteredValues.push(value);
+                            filteredColors.push(colorMapping[label.toLowerCase()]);
+                        }
+                    });
+
+                    new Chart(ctx, {
+                        type: "pie",
+                        data: {
+                            labels: filteredLabels,
+                            datasets: [{
+                                label: "Jumlah Aktivitas",
+                                data: filteredValues,
+                                backgroundColor: filteredColors,
+                                borderColor: "white",
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { 
+                                    position: 'bottom',
+                                    labels: { 
+                                        color: "#000000", 
+                                        usePointStyle: true, 
+                                        font: { weight: 'bold' }
+                                    }
+                                },
+                                datalabels: {
+                                    color: '#000000',
+                                    formatter: (value, context) => {
+                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        if (total === 0) {
+                                            return "0%";
+                                        }
+                                        const percentage = (value / total * 100).toFixed(1) + '%';
+                                        return percentage;
+                                    },
+                                    font: {
+                                        weight: 'bold',
+                                        size: 14,
+                                    }
+                                }
+                            }
+                        },
+                        plugins: [ChartDataLabels]
+                    });
+
+                } else {
+                    console.error("❌ Format data dari server tidak sesuai!", data);
+                }
+            } catch (error) {
+                console.error("❌ Error saat mengambil data grafik:", error);
+                document.querySelector(".saran-kegiatan").textContent = "Terjadi kesalahan saat mengambil data grafik.";
+            }
+
+            console.log("📥 Memuat Saran...");
+            const storedSuggestion = localStorage.getItem("suggestion");
+
+            if (storedSuggestion) {
+                console.log("✅ Saran ditemukan di localStorage:", storedSuggestion);
+                document.querySelector(".saran-kegiatan").textContent = storedSuggestion;
+            } else {
+                try {
+                    console.log("📡 Mengambil saran dari server...");
+                    const response = await fetch(`http://127.0.0.1:5000/get_suggestion?user_email=${encodeURIComponent(userEmail)}`);
+                    const data = await response.json();
+
+                    if (data.suggestion) {
+                        console.log("✅ Saran dari server:", data.suggestion);
+                        document.querySelector(".saran-kegiatan").textContent = data.suggestion;
+                        localStorage.setItem("suggestion", data.suggestion);
+                    } else {
+                        console.log("❌ Tidak ada saran di server.");
+                        document.querySelector(".saran-kegiatan").textContent = "Tidak ada saran saat ini.";
+                    }
+                } catch (error) {
+                    console.error("❌ Error saat mengambil saran:", error);
+                    document.querySelector(".saran-kegiatan").textContent = "Terjadi kesalahan saat mengambil saran.";
+                }
+            }
+        });
+
+        function handleLogout() {
+            const confirmLogout = confirm("Apakah Anda yakin ingin logout?");
+            if (confirmLogout) {
+                console.log("🔒 Logout dikonfirmasi.");
+                localStorage.removeItem("isLoggedIn");
+                localStorage.removeItem("user_email");
+                window.location.href = "login.html";
+            } else {
+                console.log("❌ Logout dibatalkan.");
+            }
+        }
+
+        function goBack() {
+             window.location.href = "laporan.html";
+        }
+    </script>
+    
+</body>
+</html>
