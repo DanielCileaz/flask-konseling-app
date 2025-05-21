@@ -30,6 +30,41 @@
             box-sizing: border-box;
             border-radius: 10px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 14px;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow:
+                0 0 8px 2px rgba(123, 147, 240, 0.6),
+                0 0 16px 6px rgba(123, 147, 240, 0.4);
+            animation: glow-line 3s linear infinite;
+        }
+
+        @keyframes glow-line {
+            0% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
+            50% {
+                box-shadow:
+                    0 0 12px 4px rgba(123, 147, 240, 0.8),
+                    0 0 24px 8px rgba(123, 147, 240, 0.6);
+            }
+            100% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
         }
 
         .title {
@@ -37,13 +72,13 @@
             font-size: 32px;
             color: #4A90E2;
             text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-            margin-top: 15px;  
+            margin-top: 15px;
         }
 
         .image {
             width: 219px;
             height: 260px;
-            margin-top: 10px;  
+            margin-top: 10px;
         }
 
         .text-box-label {
@@ -82,6 +117,10 @@
             resize: none;
         }
 
+        .text-box::placeholder {
+            color: white;
+        }
+
         .send-button {
             width: 147px;
             height: 39px;
@@ -89,19 +128,16 @@
             border-radius: 20px;
             font-family: 'Poppins', sans-serif;
             font-size: 20px;
-            color: white; /* Mengubah teks tombol menjadi putih */
+            color: white;
             text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
             border: none;
             margin-top: 20px;
             cursor: pointer;
+            transition: background 0.3s ease;
         }
 
         .send-button:hover {
             background: #5a73c0;
-        }
-
-        .input-box::placeholder {
-            color: white; /* Mengubah warna placeholder menjadi putih */
         }
 
         .message {
@@ -115,21 +151,23 @@
             color: red;
         }
 
-        /* Responsif untuk perangkat kecil */
+        /* Responsive */
         @media (max-width: 600px) {
             .container {
-                width: 90%; /* Menyesuaikan lebar container */
+                width: 90%;
             }
 
             .title {
-                font-size: 24px; /* Menyesuaikan ukuran font */
+                font-size: 24px;
             }
 
             .image {
-                width: 150px; /* Menyesuaikan gambar */
+                width: 150px;
+                height: auto;
             }
         }
     </style>
+
 </head>
 <body>
 

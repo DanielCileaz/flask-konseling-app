@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Styling tetap sama, tidak berubah */
+        /* ===== Body Styling ===== */
         body {
             display: flex;
             flex-direction: column;
@@ -17,12 +17,13 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            padding: 10px;
             background: #F5F5F5;
             font-family: 'Poppins', sans-serif;
             text-align: center;
-            padding: 10px;
         }
 
+        /* ===== Container ===== */
         .container {
             position: relative;
             width: 500px;
@@ -36,48 +37,85 @@
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
 
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 14px;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow:
+                0 0 8px 2px rgba(123, 147, 240, 0.6),
+                0 0 16px 6px rgba(123, 147, 240, 0.4);
+            animation: glow-line 3s linear infinite;
+        }
+
+        @keyframes glow-line {
+            0% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
+            50% {
+                box-shadow:
+                    0 0 12px 4px rgba(123, 147, 240, 0.8),
+                    0 0 24px 8px rgba(123, 147, 240, 0.6);
+            }
+            100% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
+        }
+
+        /* ===== Header Elements ===== */
         .welcome-text {
+            position: absolute;
+            top: 30px;
+            z-index: 2;
             font-family: 'Luckiest Guy', cursive;
             font-size: 32px;
             color: #4A90E2;
             text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-            position: absolute;
-            top: 30px; /* Menempatkan teks di atas */
-            z-index: 2;
-        }
-        
-        .image1 {
-            width: 130px;
-            height: 141px;
-            background: url('Saran.png') no-repeat center/cover;
-            margin-top: 60px; /* Menambahkan ruang antara teks dan gambar */
         }
 
         .logout-button {
             position: absolute;
             top: 5px;
             right: 5px;
-            background-color: transparent; /* Tidak ada background */
-            color: #4A90E2; /* Sesuaikan dengan warna aplikasi */
-            font-size: 24px; /* Ukuran icon */
-            cursor: pointer;
+            background-color: transparent;
+            color: #4A90E2;
+            font-size: 24px;
             font-weight: bold;
             font-family: 'Poppins', sans-serif;
+            cursor: pointer;
             transition: color 0.3s ease;
         }
-        
+
         .logout-button:hover {
-            color: #357ABD; /* Warna saat hover */
+            color: #357ABD;
         }
 
+        /* ===== Image ===== */
+        .image1 {
+            width: 130px;
+            height: 141px;
+            background: url('Saran.png') no-repeat center/cover;
+            margin-top: 60px;
+        }
+
+        /* ===== Content Boxes ===== */
         .rectangle {
             width: 90%;
             max-width: 350px;
             padding: 20px;
+            margin: 10px;
             background: #7B93F0;
             border-radius: 20px;
             box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-            margin: 10px;
         }
 
         .grafik-keseharian {
@@ -87,6 +125,7 @@
             height: 250px;
         }
 
+        /* ===== Buttons ===== */
         .container-tombol {
             display: flex;
             justify-content: space-between;
@@ -113,12 +152,24 @@
             background-color: #357ABD;
         }
 
+        /* ===== Responsive Media Query ===== */
         @media (max-width: 600px) {
-            .welcome-text { font-size: 24px; }
-            .rectangle { width: 90%; }
-            .cek-history, .tombol-back { width: 100px; height: 35px; font-size: 12px; }
+            .welcome-text {
+                font-size: 24px;
+            }
+
+            .rectangle {
+                width: 90%;
+            }
+
+            .cek-history, .tombol-back {
+                width: 100px;
+                height: 35px;
+                font-size: 12px;
+            }
         }
     </style>
+
 </head>
 <body>
     <div class="container">
@@ -130,6 +181,7 @@
         
         <!-- Grafik mood keseharian -->
         <div class="rectangle">
+            <h3 style="margin-bottom: 10px; font-weight: bold; color: #000000;">Today's Use</h3>
             <div class="grafik-keseharian">
                 <canvas id="chartKeseharian"></canvas>
             </div>
@@ -178,9 +230,9 @@
                     const ctx = document.getElementById("chartKeseharian").getContext("2d");
 
                     const colorMapping = {
-                        'positif': '#A3CEF5',
-                        'netral':  '#9BD8C2',
-                        'negatif': '#D1C4E9'
+                        'positif': '#FFE8A3',
+                        'netral':  '#A9EFC5',
+                        'negatif': '#C8B3E6'
                     };
 
                     // Buat array baru hanya untuk label dan value yang nilainya > 0

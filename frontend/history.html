@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* Style di sini tidak diubah karena sudah rapi */
+        /* ===== Body Styling ===== */
         body {
             margin: 0;
             padding: 0;
@@ -25,7 +25,10 @@
             align-items: center;
             height: 100vh;
         }
+
+        /* ===== Container Styling ===== */
         .container {
+            position: relative;
             width: 100%;
             max-width: 390px;
             padding: 20px;
@@ -33,7 +36,44 @@
             border-radius: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             box-sizing: border-box;
+            z-index: 1;
         }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 24px;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow:
+                0 0 8px 2px rgba(123, 147, 240, 0.6),
+                0 0 16px 6px rgba(123, 147, 240, 0.4);
+            animation: glow-line 3s linear infinite;
+        }
+
+        @keyframes glow-line {
+            0% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
+            50% {
+                box-shadow:
+                    0 0 12px 4px rgba(123, 147, 240, 0.8),
+                    0 0 24px 8px rgba(123, 147, 240, 0.6);
+            }
+            100% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
+        }
+
+        /* ===== Header ===== */
         .histori-penggunaan {
             font-family: 'Luckiest Guy', cursive;
             font-size: 25px;
@@ -41,15 +81,9 @@
             text-align: center;
             text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         }
-        .kalender {
-            margin-top: 20px;
-            background: #7B93F0;
-            border-radius: 20px;
-            padding: 20px;
-            box-sizing: border-box;
-            width: 100%;
-            max-width: 350px;  /* Pastikan kalender dan grafik memiliki lebar maksimal yang sesuai */
-        }
+
+        /* ===== Box Content ===== */
+        .kalender,
         .grafik-penggunaan {
             margin-top: 20px;
             background: #7B93F0;
@@ -57,52 +91,64 @@
             padding: 20px;
             box-sizing: border-box;
             width: 100%;
-            max-width: 350px;  /* Pastikan grafik tidak lebih lebar dari kalender */
+            max-width: 350px;
         }
-        #weekdays, #calendar-grid {
+
+        /* ===== Calendar Grid ===== */
+        #weekdays,
+        #calendar-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr); /* Membuat 7 kolom untuk setiap hari dalam seminggu */
+            grid-template-columns: repeat(7, 1fr);
             gap: 5px;
             padding: 5px;
             text-align: center;
         }
+
         #weekdays {
-            margin-bottom: 5px; /* Memberi jarak antara nama hari dan kotak tanggal */
+            margin-bottom: 5px;
         }
+
         .day-name {
             font-weight: bold;
             color: #ffffff;
             margin-left: 2px;
-        }        
+        }
+
+        /* ===== Calendar Controls ===== */
         #calendar-controls {
             display: flex;
-            justify-content: space-around; /* Menjaga judul bulan tetap di tengah */
-            align-items: center; /* Memastikan elemen di tengah secara vertikal */
+            justify-content: space-around;
+            align-items: center;
             width: 100%;
             padding: 0 10px;
         }
-        #prevMonth, #nextMonth {
+
+        #prevMonth,
+        #nextMonth {
             background-color: transparent;
             border: none;
             color: #ffffff;
-            font-size: 30px; /* Memperbesar ukuran panah */
+            font-size: 30px;
             cursor: pointer;
             padding: 5px;
-            text-align: center;
-            margin: 0 10px; /* Memberi jarak antara panah dan judul bulan */
-        }        
+            margin: 0 10px;
+        }
+
         #calendar-title {
             font-weight: bold;
-            font-size: 18px; /* Menyesuaikan ukuran font */
+            font-size: 18px;
             text-align: center;
             color: #ffffff;
-            width: 100%;  /* Pastikan lebar 100% agar posisi tetap di tengah */
+            width: 100%;
         }
+
         .grafik-penggunaan canvas {
             width: 100%;
             height: 200px;
         }
-        .penggunaan, .dominan, .waktu {
+
+        .penggunaan,
+        .dominan {
             font-family: 'Poppins', sans-serif;
             font-size: 20px;
             color: #7B93F0;
@@ -110,6 +156,8 @@
             margin-top: 10px;
             text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         }
+
+        /* ===== Back Button ===== */
         .rectangle2 {
             width: 75px;
             height: 31px;
@@ -121,16 +169,14 @@
             cursor: pointer;
             margin-top: 20px;
         }
+
         .tombol-back {
             width: 24px;
             height: 24px;
             background: url('panah.png') no-repeat center/cover;
         }
-        @media (max-width: 600px) {
-            .histori-penggunaan { font-size: 22px; }
-            .kalender, .grafik-penggunaan { padding: 15px; }
-            .penggunaan, .dominan, .waktu { font-size: 18px; }
-        }
+
+        /* ===== Calendar Day Styling ===== */
         .day-box {
             width: 30px;
             height: 30px;
@@ -141,14 +187,26 @@
             border-radius: 50%;
             cursor: pointer;
         }
-        .day-box.empty { background-color: transparent; cursor: default; }
-        .intensity-0 { background-color: #f1f1f1; }   /* Putih */
-        .intensity-1 { background-color: #A0D0FF; }   /* Biru muda */
-        .intensity-2 { background-color: #70AFFF; }   /* Biru sedikit lebih gelap */
-        .intensity-3 { background-color: #4080FF; }   /* Biru sedang */
-        .intensity-4 { background-color: #0060FF; }   /* Biru gelap */
-        
+
+        .day-box.empty {
+            background-color: transparent;
+            cursor: default;
+        }
+
+        .intensity-0 { background-color: #f1f1f1; }
+        .intensity-1 { background-color: #A0D0FF; }
+        .intensity-2 { background-color: #70AFFF; }
+        .intensity-3 { background-color: #4080FF; }
+        .intensity-4 { background-color: #0060FF; }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 600px) {
+            .histori-penggunaan { font-size: 22px; }
+            .kalender, .grafik-penggunaan { padding: 15px; }
+            .penggunaan, .dominan { font-size: 18px; }
+        }
     </style>
+
 </head>
 <body>
 
@@ -177,9 +235,8 @@
         <canvas id="grafik"></canvas>
     </div>
 
-    <div class="penggunaan">Use: <span id="usage">-</span></div>
+    <div class="penggunaan">Use in a day: <span id="usage">-</span> times</div>
     <div class="dominan">Dominant: <span id="dominant">-</span></div>
-    <div class="waktu">Usage time: <span id="time">-</span></div>
 
     <div class="rectangle2" onclick="goBack()">
         <div class="tombol-back"></div>
@@ -246,7 +303,6 @@
         if (lastClickedDate === date) {
             document.getElementById("usage").textContent = "-";
             document.getElementById("dominant").textContent = "-";
-            document.getElementById("time").textContent = "-";
             chart.data.labels = [];
             chart.data.datasets[0].data = [];
             chart.update();
@@ -258,21 +314,13 @@
 
         const selectedData = globalHistoryData[date];
         if (selectedData) {
-            document.getElementById("usage").textContent = selectedData.penggunaan;
+            document.getElementById("usage").textContent = selectedData.penggunaan || 0;
             document.getElementById("dominant").textContent = selectedData.dominant || "Tidak Dikenal";
-            document.getElementById("time").textContent = formatMinutes(selectedData.waktu);
 
             chart.data.labels = [date];
             chart.data.datasets[0].data = [selectedData.penggunaan];
             chart.update();
         }
-    }
-
-    function formatMinutes(minutes) {
-        if (minutes < 60) return `${minutes} menit`;
-        const jam = Math.floor(minutes / 60);
-        const sisaMenit = minutes % 60;
-        return `${jam} jam ${sisaMenit} menit`;
     }
 
     document.getElementById("prevMonth").onclick = () => {
@@ -311,13 +359,11 @@
 
             const usageData = data.usage_data || [];
             const dominantData = Array.isArray(data.dominan) ? data.dominan : [data.dominan];
-            const timeData = data.waktu || [];
 
             data.dates.forEach((date, index) => {
                 globalHistoryData[date] = {
                     penggunaan: usageData[index] || 0,
-                    dominant: dominantData[index] || "Tidak Dikenal",
-                    waktu: timeData[index] || 0
+                    dominant: dominantData[index] || "Tidak Dikenal"
                 };
             });
 
@@ -342,7 +388,7 @@
                     datasets: [{
                         label: "Penggunaan",
                         data: usagePerDay,
-                        backgroundColor: "#00B8D9",
+                        backgroundColor: "#ffff",
                         borderColor: "#000",
                         borderWidth: 1
                     }]
@@ -350,53 +396,47 @@
                 options: {
                     responsive: true,
                     plugins: {
+                        title: {
+                            display: true,
+                            text: 'Monthly Usage',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            color: '#000'
+                        },
                         legend: {
-                            labels: {
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                },
-                                color: '#000'
-                            }
+                            display: false
                         }
                     },
                     scales: {
                         x: {
-                            ticks: {
-                                color: "#000",
-                                maxRotation: 0,
-                                minRotation: 0
-                            },
-                            grid: {
-                                color: "rgba(0,0,0,0.2)"
-                            },
-                            border: {
-                                color: "#000"
-                            },
+                            ticks: { color: "#000", maxRotation: 0, minRotation: 0 },
+                            grid: { color: "rgba(0,0,0,0.2)" },
+                            border: { color: "#000" },
                             title: {
                                 display: true,
-                                text: 'Tanggal',
+                                text: 'Date',
                                 color: '#000',
-                                font: {
-                                    size: 14
-                                }
+                                font: { size: 14 }
                             }
                         },
                         y: {
-                            ticks: {
-                                color: "#000"
-                            },
-                            grid: {
-                                color: "rgba(0,0,0,0.2)"
-                            },
-                            border: {
-                                color: "#000"
-                            },
-                            beginAtZero: true
+                            ticks: { color: "#000" },
+                            grid: { color: "rgba(0,0,0,0.2)" },
+                            border: { color: "#000" },
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Usage Count',
+                                color: '#000',
+                                font: { size: 14 }
+                            }
                         }
                     }
                 }
             });
+
 
             renderCalendar(globalHeatmapData, currentYear, currentMonth);
         } catch (error) {
@@ -406,7 +446,6 @@
 
     fetchData();
 </script>
-
 
 </body>
 </html>

@@ -6,12 +6,13 @@
     <title>Login - E-MOOD</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Mengatur body untuk memastikan konten di tengah */
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins&display=swap');
+
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Memastikan body memenuhi tinggi layar */
+            height: 100vh;
             margin: 0;
             background: #F5F5F5;
             font-family: 'Poppins', sans-serif;
@@ -19,15 +20,50 @@
         }
 
         .container {
+            position: relative;
             width: 100%;
-            max-width: 400px; /* Membatasi lebar container */
+            max-width: 400px;
             padding: 20px;
             background: white;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1;
         }
 
-        /* E-MOOD Title */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 14px;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow:
+                0 0 8px 2px rgba(123, 147, 240, 0.6),
+                0 0 16px 6px rgba(123, 147, 240, 0.4);
+            animation: glow-line 3s linear infinite;
+        }
+
+        @keyframes glow-line {
+            0% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
+            50% {
+                box-shadow:
+                    0 0 12px 4px rgba(123, 147, 240, 0.8),
+                    0 0 24px 8px rgba(123, 147, 240, 0.6);
+            }
+            100% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
+        }
+
         .e-mood {
             font-family: 'Luckiest Guy', cursive;
             font-size: 48px;
@@ -37,7 +73,6 @@
             padding-bottom: 5px;
         }
 
-        /* Header Text */
         .header-text {
             font-weight: bold;
             font-size: 15px;
@@ -45,15 +80,13 @@
             margin-top: 20px;
         }
 
-        /* Login Image */
         .login-image {
             width: 100%;
             height: auto;
             margin-top: 20px;
-            object-fit: contain; /* Menghindari gambar terdistorsi */
+            object-fit: contain;
         }
 
-        /* Input Fields */
         .input-box {
             width: 100%;
             height: 38px;
@@ -69,14 +102,13 @@
         }
 
         .input-box::placeholder {
-            color: white; /* Mengubah warna placeholder menjadi putih */
+            color: white;
         }
 
-        /* Button */
         .login-btn {
-            width: auto; /* Ukuran tombol mengikuti panjang teks */
+            width: auto;
             height: 40px;
-            padding: 0 20px; /* Menambahkan padding agar lebih proporsional */
+            padding: 0 20px;
             background: #7B93F0;
             color: white;
             font-family: 'Poppins', sans-serif;
@@ -85,13 +117,13 @@
             cursor: pointer;
             margin-top: 15px;
             border-radius: 5px;
+            transition: background 0.3s ease;
         }
 
         .login-btn:hover {
             background: #4A90E2;
         }
 
-        /* Sign Up Link */
         .signUp {
             margin-top: 20px;
             font-family: 'Poppins', sans-serif;
@@ -109,17 +141,17 @@
             text-decoration: underline;
         }
 
-        /* Responsif untuk perangkat kecil */
         @media (max-width: 600px) {
             .e-mood {
-                font-size: 40px; /* Menyesuaikan ukuran font */
+                font-size: 40px;
             }
 
             .login-image {
-                width: 60%; /* Menyesuaikan gambar */
+                width: 60%;
             }
         }
     </style>
+
 </head>
 <body>
 

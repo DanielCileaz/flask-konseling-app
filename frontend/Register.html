@@ -6,7 +6,8 @@
     <title>Register - E-MOOD</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Body styling */
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins&display=swap');
+
         body {
             display: flex;
             justify-content: center;
@@ -17,19 +18,54 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Container untuk semua konten */
         .container {
+            position: relative;
             width: 100%;
             max-width: 400px;
             padding: 20px;
             box-sizing: border-box;
             background: white;
             border-radius: 10px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1;
         }
 
-        /* Title styling */
+        /* Glow effect */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 14px;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow:
+                0 0 8px 2px rgba(123, 147, 240, 0.6),
+                0 0 16px 6px rgba(123, 147, 240, 0.4);
+            animation: glow-line 3s linear infinite;
+        }
+
+        @keyframes glow-line {
+            0% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
+            50% {
+                box-shadow:
+                    0 0 12px 4px rgba(123, 147, 240, 0.8),
+                    0 0 24px 8px rgba(123, 147, 240, 0.6);
+            }
+            100% {
+                box-shadow:
+                    0 0 8px 2px rgba(123, 147, 240, 0.6),
+                    0 0 16px 6px rgba(123, 147, 240, 0.4);
+            }
+        }
+
         .title {
             font-family: 'Luckiest Guy', cursive;
             font-size: 50px;
@@ -38,20 +74,18 @@
             margin-bottom: 20px;
         }
 
-        /* Register text */
         .register-text {
             font-size: 16px;
             font-weight: bold;
             margin-bottom: 20px;
-            color: #4A90E2; /* Menambahkan warna biru pada teks */
+            color: #4A90E2;
         }
 
-        /* Input styling */
         .input-box {
             width: 100%;
             height: 40px;
             margin-bottom: 15px;
-            padding-left: 40px; /* Space for icon */
+            padding-left: 40px;
             font-size: 16px;
             background: #7B93F0;
             border: none;
@@ -65,10 +99,10 @@
             color: white;
         }
 
-        /* Button styling */
         .register-btn {
             width: auto;
             height: 40px;
+            padding: 0 20px;
             background: #7B93F0;
             color: white;
             font-weight: bold;
@@ -77,13 +111,13 @@
             font-family: 'Poppins', sans-serif;
             cursor: pointer;
             margin-top: 10px;
+            transition: background 0.3s ease;
         }
 
         .register-btn:hover {
             background: #6A7BE0;
         }
 
-        /* Back to login link */
         .back-to-login {
             text-align: center;
             margin-top: 20px;
@@ -95,21 +129,23 @@
             font-weight: bold;
         }
 
-        /* Styling for form items inside container */
+        .back-to-login a:hover {
+            text-decoration: underline;
+        }
+
         .form-container {
             position: relative;
             margin-bottom: 20px;
         }
 
-        /* Gambar */
         .register-image {
             width: 80%;
             height: auto;
             max-width: 300px;
             margin-bottom: 20px;
         }
-
     </style>
+
 </head>
 <body>
     
