@@ -34,6 +34,27 @@ EMOTION_MAP = {
 MIN_SIMILARITY_THRESHOLD = 0.6
 GENERAL_ADVICE = "Try journaling or talking to a friend about how you're feeling. It’s okay to not have all the answers right now."
 
+# Saran default berdasarkan sentimen
+DEFAULT_ADVICE_BY_SENTIMENT = {
+    "positive": "Keep up the positive energy! Maybe share your good mood with someone else or write down what made you feel this way.",
+    "neutral": "Take a walk, enjoy a hobby, or try something creative to keep your mind engaged in a positive way.",
+    "negative": "It’s okay to feel down sometimes. Try some deep breathing, write your thoughts in a journal, or talk to someone you trust."
+}
+
+# Fungsi baru untuk memilih tipe saran berdasarkan emosi dan similarity
+def choose_advice_type(emotion: str, similarity: float) -> str:
+    emotion = emotion.lower()
+    # Default threshold
+    threshold = 0.45
+    if emotion in ['joy', 'neutral']:
+        threshold = 0.5
+    elif emotion in ['sadness', 'fear', 'anger', 'disgust']:
+        threshold = 0.4
+    if similarity >= threshold:
+        return 'dataset advice'
+    else:
+        return 'default advice'
+
 def analyze_emotion(emotions, text):
     highest = max(emotions, key=lambda x: x["score"])
     emotion_label = highest["label"].lower()
@@ -68,19 +89,22 @@ def get_recommendation_with_emotion(input_text_en):
         matched_a = answers[best_idx]
         similarity_score = round(cosine_scores[best_idx].item(), 2)
 
-        # Cek jika similarity rendah dan emosi tidak negatif → ganti dengan saran umum
-        if similarity_score < MIN_SIMILARITY_THRESHOLD and emotion_info["main_sentiment"] != "negative":
+        # Pilih tipe advice berdasarkan fungsi baru
+        advice_type = choose_advice_type(emotion_info["dominant_emotion"], similarity_score)
+
+        if advice_type == 'default advice':
             matched_q = "You seem to be experiencing something that's difficult to explain."
-            matched_a = GENERAL_ADVICE
+            sentiment = emotion_info["main_sentiment"]
+            matched_a = DEFAULT_ADVICE_BY_SENTIMENT.get(sentiment, GENERAL_ADVICE)
 
         return emotion_info, [
             {
-                "type": "matching QA",
+                "type": advice_type,
                 "activity": f"Similar question: {matched_q}",
                 "score": similarity_score
             },
             {
-                "type": "matching QA",
+                "type": advice_type,
                 "activity": f"Advice: {matched_a}",
                 "score": emotion_info["score"]
             }
