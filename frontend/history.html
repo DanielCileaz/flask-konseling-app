@@ -351,7 +351,7 @@
                 return;
             }
 
-            const response = await fetch(`http://127.0.0.1:5000/get_history?user_email=${encodeURIComponent(userEmail)}&month=${currentMonth + 1}&year=${currentYear}`);
+            const response = await fetch(`http://172.20.10.2:5000/get_history?user_email=${encodeURIComponent(userEmail)}&month=${currentMonth + 1}&year=${currentYear}`);
             if (!response.ok) throw new Error("Gagal mengambil data");
 
             const data = await response.json();

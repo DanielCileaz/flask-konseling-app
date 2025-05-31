@@ -26,7 +26,8 @@
         /* ===== Container ===== */
         .container {
             position: relative;
-            width: 500px;
+            width: 100%;
+            max-width: 500px;
             background: #F5F5F5;
             display: flex;
             flex-direction: column;
@@ -122,7 +123,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 250px;
+            width: 100%;
+            min-height: 200px;
+        }
+
+        .grafik-keseharian canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
         }
 
         /* ===== Buttons ===== */
@@ -309,7 +321,7 @@
             } else {
                 try {
                     console.log("📡 Mengambil saran dari server...");
-                    const response = await fetch(`http://127.0.0.1:5000/get_suggestion?user_email=${encodeURIComponent(userEmail)}`);
+                    const response = await fetch(`http://172.20.10.2:5000/get_suggestion?user_email=${encodeURIComponent(userEmail)}`);
                     const data = await response.json();
 
                     if (data.suggestion) {

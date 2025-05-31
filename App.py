@@ -12,7 +12,7 @@ from recommender import get_recommendation_with_emotion
 
 # Inisialisasi Flask
 app = Flask(__name__, static_folder='frontend')
-CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}}, supports_credentials=True)
+CORS(app)
 
 # ------------------ TAMBAHAN UNTUK HALAMAN LOGIN ------------------
 @app.route('/')
@@ -300,4 +300,4 @@ def login():
         return jsonify({"error": "Email atau password salah"}), 401
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

@@ -210,7 +210,7 @@
     
             console.log("📡 Mengirim teks ke server:", { text, user_email }); // Debugging
     
-            fetch("http://127.0.0.1:5000/send_message", {
+            fetch("http://172.20.10.2:5000/send_message", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: text, user_email: user_email }) 
