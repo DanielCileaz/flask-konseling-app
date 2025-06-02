@@ -8,14 +8,22 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins&display=swap');
 
+        /* ===== Body Styling ===== */
         body {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh; /* dari height: 100vh */
             margin: 0;
+            padding: 10px;
             background: #F5F5F5;
             font-family: 'Poppins', sans-serif;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        body {
+            display: block;
         }
 
         .container {
@@ -28,10 +36,10 @@
             border-radius: 10px;
             text-align: center;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 40px auto; /* Tambahan agar ada ruang atas-bawah */
             z-index: 1;
         }
 
-        /* Glow effect */
         .container::before {
             content: "";
             position: absolute;
@@ -145,6 +153,7 @@
             margin-bottom: 20px;
         }
     </style>
+
 
 </head>
 <body>

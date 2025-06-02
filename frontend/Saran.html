@@ -14,13 +14,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
+            min-height: 100vh; /* dari height: 100vh */
             margin: 0;
             padding: 10px;
             background: #F5F5F5;
             font-family: 'Poppins', sans-serif;
             text-align: center;
+            overflow-x: hidden;
         }
 
         /* ===== Container ===== */
@@ -198,10 +198,16 @@
                 <canvas id="chartKeseharian"></canvas>
             </div>
         </div>
-
+        
         <!-- Saran aktivitas -->
         <div class="rectangle">
             <div class="saran-kegiatan"></div>
+        </div>
+
+        <!-- Last Sentiment -->
+        <div class="rectangle" style="background:#e0e7ff; color:#4A90E2; margin-bottom:10px; padding:10px 20px; max-width: 350px;">
+            <h4 style="font-size: 14px; margin: 0 0 10px 0; font-weight: bold;">Last Sentiment:</h4>
+            <p id="lastSentiment" style="font-size: 12px; margin: 0;">Loading...</p>
         </div>
         
         <div class="container-tombol">
@@ -234,7 +240,7 @@
 
             try {
                 console.log(`📡 Mengambil data grafik untuk: ${userEmail}`);
-                const response = await fetch(`http://127.0.0.1:5000/get_chart_data?user_email=${encodeURIComponent(userEmail)}`);
+                const response = await fetch(`http://172.20.10.2:5000/get_chart_data?user_email=${encodeURIComponent(userEmail)}`);
                 const data = await response.json();
 
                 if (data.labels && data.values) {
@@ -266,7 +272,7 @@
                         data: {
                             labels: filteredLabels,
                             datasets: [{
-                                label: "Jumlah Aktivitas",
+                                label: "Activity Count",
                                 data: filteredValues,
                                 backgroundColor: filteredColors,
                                 borderColor: "white",
@@ -304,6 +310,22 @@
                         plugins: [ChartDataLabels]
                     });
 
+                    // --- TAMBAHAN UNTUK LAST SENTIMENT berdasarkan nilai terbesar dari data chart ---
+                    if (filteredValues.length > 0) {
+                        const maxValue = Math.max(...filteredValues);
+                        const dominantIndex = filteredValues.indexOf(maxValue);
+                        const dominantSentiment = filteredLabels[dominantIndex] || "No data";
+                        document.getElementById("lastSentiment").textContent = dominantSentiment;
+                    } else {
+                        // Jika tidak ada data, fallback ke nilai yang ada di localStorage
+                        const lastSent = localStorage.getItem("last_sentiment") || "No sentiment data available.";
+                        document.getElementById("lastSentiment").textContent = lastSent;
+                    }
+
+                    // --- Jika server juga mengirim last_sentiment, overwrite ---
+                    if (data.last_sentiment) {
+                        document.getElementById("lastSentiment").textContent = data.last_sentiment;
+                    }
                 } else {
                     console.error("❌ Format data dari server tidak sesuai!", data);
                 }
@@ -328,6 +350,12 @@
                         console.log("✅ Saran dari server:", data.suggestion);
                         document.querySelector(".saran-kegiatan").textContent = data.suggestion;
                         localStorage.setItem("suggestion", data.suggestion);
+
+                        // --- TAMBAHAN UNTUK MENYIMPAN SENTIMENT DAN TAMPILKAN ---
+                        if (data.sentiment) {
+                            localStorage.setItem("last_sentiment", data.sentiment);
+                            document.getElementById("lastSentiment").textContent = data.sentiment;
+                        }
                     } else {
                         console.log("❌ Tidak ada saran di server.");
                         document.querySelector(".saran-kegiatan").textContent = "Tidak ada saran saat ini.";
@@ -352,7 +380,7 @@
         }
 
         function goBack() {
-             window.location.href = "laporan.html";
+            window.location.href = "laporan.html";
         }
     </script>
     

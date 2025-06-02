@@ -1,247 +1,264 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How's your day?</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Montserrat:wght@400&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How's your day?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Montserrat:wght@400&display=swap');
 
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #F5F5F5;
-            font-family: 'Poppins', sans-serif;
-        }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: #F5F5F5;
+      font-family: 'Poppins', sans-serif;
+    }
 
-        .container {
-            position: relative;
-            width: 390px;
-            background: #F5F5F5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-        }
+    body {
+      display: block;
+    }
 
-        .container::before {
-            content: "";
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
-            border-radius: 14px;
-            pointer-events: none;
-            z-index: 0;
-            box-shadow:
-                0 0 8px 2px rgba(123, 147, 240, 0.6),
-                0 0 16px 6px rgba(123, 147, 240, 0.4);
-            animation: glow-line 3s linear infinite;
-        }
+    .container {
+      position: relative;
+      width: 390px;
+      background: #F5F5F5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin: 40px auto;
+      box-sizing: border-box;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
 
-        @keyframes glow-line {
-            0% {
-                box-shadow:
-                    0 0 8px 2px rgba(123, 147, 240, 0.6),
-                    0 0 16px 6px rgba(123, 147, 240, 0.4);
-            }
-            50% {
-                box-shadow:
-                    0 0 12px 4px rgba(123, 147, 240, 0.8),
-                    0 0 24px 8px rgba(123, 147, 240, 0.6);
-            }
-            100% {
-                box-shadow:
-                    0 0 8px 2px rgba(123, 147, 240, 0.6),
-                    0 0 16px 6px rgba(123, 147, 240, 0.4);
-            }
-        }
+    .container::before {
+      content: "";
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border-radius: 14px;
+      pointer-events: none;
+      z-index: 0;
+      box-shadow:
+        0 0 8px 2px rgba(123, 147, 240, 0.6),
+        0 0 16px 6px rgba(123, 147, 240, 0.4);
+      animation: glow-line 3s linear infinite;
+    }
 
-        .title {
-            font-family: 'Luckiest Guy', cursive;
-            font-size: 32px;
-            color: #4A90E2;
-            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-            margin-top: 15px;
-        }
+    @keyframes glow-line {
+      0% {
+        box-shadow:
+          0 0 8px 2px rgba(123, 147, 240, 0.6),
+          0 0 16px 6px rgba(123, 147, 240, 0.4);
+      }
+      50% {
+        box-shadow:
+          0 0 12px 4px rgba(123, 147, 240, 0.8),
+          0 0 24px 8px rgba(123, 147, 240, 0.6);
+      }
+      100% {
+        box-shadow:
+          0 0 8px 2px rgba(123, 147, 240, 0.6),
+          0 0 16px 6px rgba(123, 147, 240, 0.4);
+      }
+    }
 
-        .image {
-            width: 219px;
-            height: 260px;
-            margin-top: 10px;
-        }
+    .title {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 32px;
+      color: #4A90E2;
+      text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      margin-top: 50px;
+    }
 
-        .text-box-label {
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            color: #4A90E2;
-            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-            margin-top: 10px;
-        }
+    .image {
+      width: 219px;
+      height: 260px;
+      margin-top: 10px;
+    }
 
-        .input-container {
-            width: 100%;
-            max-width: 297px;
-            height: 349px;
-            background: #7B93F0;
-            border: 1px solid #000000;
-            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 10px;
-        }
+    .text-box-label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      color: #4A90E2;
+      text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      margin-top: 10px;
+    }
 
-        .text-box {
-            width: 90%;
-            height: 80%;
-            background: #7B93F0;
-            border: none;
-            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-            border-radius: 10px;
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
-            color: white;
-            padding: 10px;
-            resize: none;
-        }
+    .input-container {
+      width: 100%;
+      max-width: 297px;
+      height: 349px;
+      background: #7B93F0;
+      border: 1px solid #000000;
+      box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
 
-        .text-box::placeholder {
-            color: white;
-        }
+    .text-box {
+      width: 90%;
+      height: 80%;
+      background: #7B93F0;
+      border: none;
+      box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      padding: 10px;
+      resize: none;
+    }
 
-        .send-button {
-            width: 147px;
-            height: 39px;
-            background: #7B93F0;
-            border-radius: 20px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 20px;
-            color: white;
-            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-            border: none;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
+    .text-box::placeholder {
+      color: white;
+    }
 
-        .send-button:hover {
-            background: #5a73c0;
-        }
+    .send-button {
+      width: 147px;
+      height: 39px;
+      background: #7B93F0;
+      border-radius: 20px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 20px;
+      color: white;
+      text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
 
-        .message {
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            margin-top: 15px;
-            color: green;
-        }
+    .send-button:hover {
+      background: #5a73c0;
+    }
 
-        .error {
-            color: red;
-        }
+    .message {
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      margin-top: 15px;
+      color: green;
+    }
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            .container {
-                width: 90%;
-            }
+    .error {
+      color: red;
+    }
 
-            .title {
-                font-size: 24px;
-            }
+    .logo-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      text-decoration: none;
+    }
 
-            .image {
-                width: 150px;
-                height: auto;
-            }
-        }
-    </style>
+    .logo-img {
+      width: 36px;
+      height: 36px;
+      transition: transform 0.2s ease;
+    }
 
+    .logo-img:hover {
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: 90%;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+      .image {
+        width: 150px;
+        height: auto;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1 class="title">How's your day?</h1>
+    <img src="laporan.png" alt="Gambar Orang Berpikir" class="image">
+    <p class="text-box-label"><b>Write your feelings below!!!</b></p>
 
-    <div class="container">
-        <h1 class="title">How's your day?</h1>
-        <img src="laporan.png" alt="Gambar Orang Berpikir" class="image">
-        <p class="text-box-label"><b>Write your feelings below!!!</b></p>
-        
-        <div class="input-container">
-            <textarea id="user-input" class="text-box"></textarea>
-        </div>
-        
-        <button class="send-button" onclick="sendMessage()">Send</button>
-
-        <p id="response-message" class="message"></p>
+    <div class="input-container">
+      <textarea id="user-input" class="text-box"></textarea>
     </div>
 
-    <script>
-        // Cek apakah user sudah login, kalau belum redirect ke login.html
-        if (!localStorage.getItem("isLoggedIn")) {
-            window.location.href = "login.html";
+    <a href="Saran.html" class="logo-link" title="Main Page">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#4A90E2" stroke-width="2" viewBox="0 0 24 24" width="36" height="36">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75L12 3l9 6.75V20a1 1 0 01-1 1h-5a1 1 0 01-1-1v-4H9v4a1 1 0 01-1 1H4a1 1 0 01-1-1V9.75z"/>
+      </svg>
+    </a>
+
+    <button class="send-button" onclick="sendMessage()">Send</button>
+    <p id="response-message" class="message"></p>
+  </div>
+
+  <script>
+    if (!localStorage.getItem("isLoggedIn")) {
+      window.location.href = "login.html";
+    }
+
+    function sendMessage() {
+      const text = document.getElementById("user-input").value.trim();
+      const responseMessage = document.getElementById("response-message");
+      let user_email = localStorage.getItem("user_email");
+
+      if (!text) {
+        responseMessage.textContent = "Silakan isi perasaan Anda terlebih dahulu.";
+        responseMessage.classList.add("error");
+        return;
+      }
+
+      if (!user_email) {
+        console.warn("⚠️ Email tidak ditemukan di localStorage, mengirim tanpa email.");
+        user_email = "guest@example.com";
+      }
+
+      console.log("📡 Mengirim teks ke server:", { text, user_email });
+
+      fetch("http://172.20.10.2:5000/send_message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: text, user_email: user_email })
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json()
+            .then(err => { throw new Error(err.error || "Gagal mengirim data ke server"); })
+            .catch(() => { throw new Error("Gagal mengurai JSON dari server"); });
         }
-    
-        function sendMessage() {
-            const text = document.getElementById("user-input").value.trim(); // Hilangkan spasi ekstra
-            const responseMessage = document.getElementById("response-message");
-            let user_email = localStorage.getItem("user_email");  // Ambil email dari localStorage
-            
-            if (!text) {
-                responseMessage.textContent = "Silakan isi perasaan Anda terlebih dahulu.";
-                responseMessage.classList.add("error");
-                return;
-            }
-    
-            // Pastikan email ada, jika tidak, berikan default value
-            if (!user_email) {
-                console.warn("⚠️ Email tidak ditemukan di localStorage, mengirim tanpa email.");
-                user_email = "guest@example.com"; // Default value jika userEmail tidak ada
-            }
-    
-            console.log("📡 Mengirim teks ke server:", { text, user_email }); // Debugging
-    
-            fetch("http://172.20.10.2:5000/send_message", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: text, user_email: user_email }) 
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json()
-                        .then(err => { throw new Error(err.error || "Gagal mengirim data ke server"); })
-                        .catch(() => { throw new Error("Gagal mengurai JSON dari server"); });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("✅ Respons dari server:", data); // Debugging
-                responseMessage.textContent = "Saran telah diterima!";
-                responseMessage.classList.remove("error");
-                responseMessage.style.color = "green";
-    
-                // Simpan saran ke localStorage untuk ditampilkan di Saran.html
-                localStorage.setItem("suggestion", data.suggestion);
-    
-                console.log("🔀 Pindah ke Saran.html...");
-                window.location.href = "Saran.html"; // Redirect langsung
-            })
-            .catch(error => {
-                console.error("❌ Error saat mengirim:", error.message);
-                responseMessage.textContent = error.message;
-                responseMessage.classList.add("error");
-            });
-        }
-    </script>
-    
+        return response.json();
+      })
+      .then(data => {
+        console.log("✅ Respons dari server:", data);
+        responseMessage.textContent = "Saran telah diterima!";
+        responseMessage.classList.remove("error");
+        responseMessage.style.color = "green";
+        localStorage.setItem("suggestion", data.suggestion);
+        console.log("🔀 Pindah ke Saran.html...");
+        window.location.href = "Saran.html";
+      })
+      .catch(error => {
+        console.error("❌ Error saat mengirim:", error.message);
+        responseMessage.textContent = error.message;
+        responseMessage.classList.add("error");
+      });
+    }
+  </script>
 </body>
 </html>

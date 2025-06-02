@@ -13,17 +13,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* ===== Body Styling ===== */
-        body {
+        /* ===== Reset HTML & Body ===== */
+        html, body {
             margin: 0;
             padding: 0;
+            height: 100vh;
+            overflow-y: auto;
             background: #F5F5F5;
             font-family: 'Poppins', sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        }
+
+        body {
+            display: block;
         }
 
         /* ===== Container Styling ===== */
@@ -32,6 +33,7 @@
             width: 100%;
             max-width: 390px;
             padding: 20px;
+            margin: 40px auto; /* agar ada ruang atas dan bawah */
             background: #F5F5F5;
             border-radius: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -73,7 +75,6 @@
             }
         }
 
-        /* ===== Header ===== */
         .histori-penggunaan {
             font-family: 'Luckiest Guy', cursive;
             font-size: 25px;
@@ -82,7 +83,6 @@
             text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         }
 
-        /* ===== Box Content ===== */
         .kalender,
         .grafik-penggunaan {
             margin-top: 20px;
@@ -94,7 +94,6 @@
             max-width: 350px;
         }
 
-        /* ===== Calendar Grid ===== */
         #weekdays,
         #calendar-grid {
             display: grid;
@@ -114,7 +113,6 @@
             margin-left: 2px;
         }
 
-        /* ===== Calendar Controls ===== */
         #calendar-controls {
             display: flex;
             justify-content: space-around;
@@ -157,7 +155,6 @@
             text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         }
 
-        /* ===== Back Button ===== */
         .rectangle2 {
             width: 75px;
             height: 31px;
@@ -176,7 +173,6 @@
             background: url('panah.png') no-repeat center/cover;
         }
 
-        /* ===== Calendar Day Styling ===== */
         .day-box {
             width: 30px;
             height: 30px;
@@ -199,51 +195,71 @@
         .intensity-3 { background-color: #4080FF; }
         .intensity-4 { background-color: #0060FF; }
 
-        /* ===== Responsive ===== */
         @media (max-width: 600px) {
             .histori-penggunaan { font-size: 22px; }
             .kalender, .grafik-penggunaan { padding: 15px; }
             .penggunaan, .dominan { font-size: 18px; }
         }
+
+        .insight-otomatis {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e0e7ff;
+            border-radius: 15px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
+        .insight-otomatis h3 {
+            margin-top: 0;
+            color: #4A90E2;
+        }
+
     </style>
 
 </head>
 <body>
 
-<div class="container">
-    <div class="histori-penggunaan">HISTORY</div>
+    <div class="container">
+        <div class="histori-penggunaan">HISTORY</div>
 
-    <div class="kalender">
-        <div id="calendar-controls">
-            <button id="prevMonth">←</button>
-            <div id="calendar-title">Month</div>
-            <button id="nextMonth">→</button>
+        <div class="kalender">
+            <div id="calendar-controls">
+                <button id="prevMonth">←</button>
+                <div id="calendar-title">Month</div>
+                <button id="nextMonth">→</button>
+            </div>
+            <div id="weekdays">
+                <div class="day-name">Mon</div>
+                <div class="day-name">Tue</div>
+                <div class="day-name">Wed</div>
+                <div class="day-name">Thu</div>
+                <div class="day-name">Fri</div>
+                <div class="day-name">Sat</div>
+                <div class="day-name">Sun</div>
+            </div>
+            <div id="calendar-grid"></div>
         </div>
-        <div id="weekdays">
-            <div class="day-name">Mon</div>
-            <div class="day-name">Tue</div>
-            <div class="day-name">Wed</div>
-            <div class="day-name">Thu</div>
-            <div class="day-name">Fri</div>
-            <div class="day-name">Sat</div>
-            <div class="day-name">Sun</div>
+
+        <div class="grafik-penggunaan">
+            <canvas id="grafik"></canvas>
         </div>
-        <div id="calendar-grid"></div>
+
+        <div class="penggunaan">Use in a day: <span id="usage">-</span> times</div>
+        <div class="dominan">Dominant: <span id="dominant">-</span></div>
+
+        <div class="insight-otomatis">
+            <h3>Monthly Insight</h3>
+            <p id="insight-text">Memuat insight...</p>
+        </div>
+
+        <div class="rectangle2" onclick="goBack()">
+            <div class="tombol-back"></div>
+        </div>
     </div>
 
-    <div class="grafik-penggunaan">
-        <canvas id="grafik"></canvas>
-    </div>
-
-    <div class="penggunaan">Use in a day: <span id="usage">-</span> times</div>
-    <div class="dominan">Dominant: <span id="dominant">-</span></div>
-
-    <div class="rectangle2" onclick="goBack()">
-        <div class="tombol-back"></div>
-    </div>
-</div>
-
-<script>
+    <script>
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
@@ -343,6 +359,53 @@
         renderCalendar(globalHeatmapData, currentYear, currentMonth);
     };
 
+    function generateInsight(data) {
+        const usageData = data.usage_data || [];
+        const dominantData = Array.isArray(data.dominan) ? data.dominan : [data.dominan];
+
+        const totalUsage = usageData.reduce((acc, val) => acc + val, 0);
+        const sentimentCounts = {};
+
+        dominantData.forEach(sentiment => {
+            if (sentiment && sentiment.toLowerCase() !== "tidak dikenal") {
+                sentimentCounts[sentiment] = (sentimentCounts[sentiment] || 0) + 1;
+            }
+        });
+
+        let mostFrequentSentiment = "Tidak Dikenal";
+        let maxCount = 0;
+        for (const sentiment in sentimentCounts) {
+            if (sentimentCounts[sentiment] > maxCount) {
+                mostFrequentSentiment = sentiment;
+                maxCount = sentimentCounts[sentiment];
+            }
+        }
+
+        let insightText = `This month, you used the application ${totalUsage} times. `;
+
+        if (mostFrequentSentiment !== "Tidak Dikenal") {
+            insightText += `The most dominant feeling was "${mostFrequentSentiment}". `;
+
+            const sentimentLower = mostFrequentSentiment.toLowerCase();
+            if (sentimentLower.includes("negative") || sentimentLower.includes("marah") || sentimentLower.includes("sedih")) {
+                insightText += `It's okay to not feel okay sometimes. Take time to care for yourself, maybe go for a walk, try meditation, or talk to someone you trust.`;
+            } else if (sentimentLower.includes("positif") || sentimentLower.includes("senang") || sentimentLower.includes("bahagia")) {
+                insightText += `Great job! You've maintained a positive mindset. Keep up the good habits that support your well-being.`;
+            } else if (sentimentLower.includes("netral")) {
+                insightText += `You showed emotional stability this month. Keep nurturing your balance by making time to rest and reflect.`;
+            } else {
+                insightText += `Keep observing your feelings and using this app to better understand yourself.`;
+            }
+        } else {
+            insightText += `There isn't enough data to generate a meaningful insight yet.`;
+        }
+
+
+        const insightElement = document.getElementById("insight-text");
+        if (insightElement) {
+            insightElement.textContent = insightText;
+        }
+    }
     async function fetchData() {
         try {
             const userEmail = localStorage.getItem("user_email");
@@ -437,15 +500,19 @@
                 }
             });
 
-
             renderCalendar(globalHeatmapData, currentYear, currentMonth);
+            generateInsight(data); // ✅ Tambahkan pemanggilan insight
         } catch (error) {
             console.error("Error fetching data:", error);
+            const insightElement = document.getElementById("insight-text");
+            if (insightElement) {
+                insightElement.textContent = "Gagal memuat insight.";
+            }
         }
     }
 
     fetchData();
-</script>
+    </script>
 
 </body>
 </html>

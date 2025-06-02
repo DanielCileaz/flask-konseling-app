@@ -2,6 +2,10 @@ from datasets import load_dataset
 from sentence_transformers import SentenceTransformer, util
 from transformers import pipeline
 import re
+from langdetect import detect, DetectorFactory
+
+# Agar hasil deteksi konsisten
+DetectorFactory.seed = 0
 
 # Load dataset dari HuggingFace
 dataset = load_dataset("Amod/mental_health_counseling_conversations")["train"]
@@ -36,15 +40,27 @@ GENERAL_ADVICE = "Try journaling or talking to a friend about how you're feeling
 
 # Saran default berdasarkan sentimen
 DEFAULT_ADVICE_BY_SENTIMENT = {
-    "positive": "Keep up the positive energy! Maybe share your good mood with someone else or write down what made you feel this way.",
-    "neutral": "Take a walk, enjoy a hobby, or try something creative to keep your mind engaged in a positive way.",
-    "negative": "It’s okay to feel down sometimes. Try some deep breathing, write your thoughts in a journal, or talk to someone you trust."
+    "positive": "✨ Keep up the positive energy! 😊 Maybe share your good mood with someone else or write down what made you feel this way. 📝",
+    "neutral": "🚶‍♂️ Take a walk, enjoy a hobby 🎨, or try something creative to keep your mind engaged in a positive way. 🌿",
+    "negative": "😔 It’s okay to feel down sometimes. Try some deep breathing 🌬️, write your thoughts in a journal 📓, or talk to someone you trust 🤝."
 }
+
+# Fungsi untuk memfilter hanya kalimat bahasa Inggris
+def filter_english_only(text: str) -> str:
+    sentences = re.split(r'(?<=[.!?]) +', text)
+    english_sentences = []
+    for sent in sentences:
+        try:
+            lang = detect(sent)
+            if lang == 'en':  # hanya kalimat bahasa Inggris
+                english_sentences.append(sent)
+        except:
+            pass
+    return ' '.join(english_sentences).strip()
 
 # Fungsi baru untuk memilih tipe saran berdasarkan emosi dan similarity
 def choose_advice_type(emotion: str, similarity: float) -> str:
     emotion = emotion.lower()
-    # Default threshold
     threshold = 0.45
     if emotion in ['joy', 'neutral']:
         threshold = 0.5
@@ -61,7 +77,6 @@ def analyze_emotion(emotions, text):
     emotion_score = highest["score"]
     main_sentiment = EMOTION_MAP.get(emotion_label, "neutral")
 
-    # Jika ada trigger word negatif, paksa jadi negatif
     if main_sentiment == "neutral" and any(re.search(rf"\b{kw}\b", text.lower()) for kw in HIGH_EMOTION_KEYWORDS):
         main_sentiment = "negative"
 
@@ -96,6 +111,9 @@ def get_recommendation_with_emotion(input_text_en):
             matched_q = "You seem to be experiencing something that's difficult to explain."
             sentiment = emotion_info["main_sentiment"]
             matched_a = DEFAULT_ADVICE_BY_SENTIMENT.get(sentiment, GENERAL_ADVICE)
+
+        # Filter kalimat bahasa Inggris saja
+        matched_a = filter_english_only(matched_a)
 
         return emotion_info, [
             {
