@@ -310,14 +310,10 @@
                         plugins: [ChartDataLabels]
                     });
 
-                    // --- TAMBAHAN UNTUK LAST SENTIMENT berdasarkan nilai terbesar dari data chart ---
-                    if (filteredValues.length > 0) {
-                        const maxValue = Math.max(...filteredValues);
-                        const dominantIndex = filteredValues.indexOf(maxValue);
-                        const dominantSentiment = filteredLabels[dominantIndex] || "No data";
-                        document.getElementById("lastSentiment").textContent = dominantSentiment;
+                    // --- TAMBAHAN UNTUK LAST SENTIMENT berdasarkan nilai terakhir dari data chart ---
+                    if (data.last_sentiment) {
+                        document.getElementById("lastSentiment").textContent = data.last_sentiment;
                     } else {
-                        // Jika tidak ada data, fallback ke nilai yang ada di localStorage
                         const lastSent = localStorage.getItem("last_sentiment") || "No sentiment data available.";
                         document.getElementById("lastSentiment").textContent = lastSent;
                     }

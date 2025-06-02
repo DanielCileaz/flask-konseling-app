@@ -233,6 +233,8 @@ def get_chart_data():
 
     conn = get_db_connection()
     cursor = conn.cursor()
+
+    # Ambil count per sentiment
     cursor.execute("""
         SELECT sentiment, COUNT(sentiment) 
         FROM reports 
@@ -240,6 +242,17 @@ def get_chart_data():
         GROUP BY sentiment
     """, (user_email, today))
     rows = cursor.fetchall()
+
+    # Ambil sentiment terakhir berdasarkan timestamp terbaru hari ini
+    cursor.execute("""
+        SELECT sentiment 
+        FROM reports 
+        WHERE user_email = ? AND DATE(timestamp) = ? 
+        ORDER BY timestamp DESC 
+        LIMIT 1
+    """, (user_email, today))
+    last_row = cursor.fetchone()
+
     conn.close()
 
     sentiment_map = {
@@ -255,8 +268,17 @@ def get_chart_data():
 
     labels = list(label_counts.keys())
     values = list(label_counts.values())
+    
+    last_sentiment = None
+    if last_row:
+        last_sentiment = sentiment_map.get(last_row[0], "netral")
 
-    return jsonify({"labels": labels, "values": values})
+    return jsonify({
+        "labels": labels,
+        "values": values,
+        "last_sentiment": last_sentiment
+    })
+
 
 @app.route('/register', methods=['POST'])
 def register():
