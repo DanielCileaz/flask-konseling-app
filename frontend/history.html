@@ -362,13 +362,20 @@
     function generateInsight(data) {
         const usageData = data.usage_data || [];
         const dominantData = Array.isArray(data.dominan) ? data.dominan : [data.dominan];
+        const dates = data.dates || [];
 
-        const totalUsage = usageData.reduce((acc, val) => acc + val, 0);
+        let totalUsage = 0;
         const sentimentCounts = {};
 
-        dominantData.forEach(sentiment => {
-            if (sentiment && sentiment.toLowerCase() !== "tidak dikenal") {
-                sentimentCounts[sentiment] = (sentimentCounts[sentiment] || 0) + 1;
+        dates.forEach((dateStr, index) => {
+            const date = new Date(dateStr);
+            if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+                totalUsage += usageData[index] || 0;
+
+                const sentiment = dominantData[index];
+                if (sentiment && sentiment.toLowerCase() !== "tidak dikenal") {
+                    sentimentCounts[sentiment] = (sentimentCounts[sentiment] || 0) + 1;
+                }
             }
         });
 
@@ -400,12 +407,29 @@
             insightText += `There isn't enough data to generate a meaningful insight yet.`;
         }
 
-
         const insightElement = document.getElementById("insight-text");
         if (insightElement) {
             insightElement.textContent = insightText;
         }
     }
+
+    function updateMonthlyChart() {
+        const labels = [];
+        const dataPoints = [];
+
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); // cari jumlah hari dalam bulan
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            labels.push(String(day)); // gunakan angka tanggal saja di label
+            dataPoints.push(globalHistoryData[dateStr]?.penggunaan || 0);
+        }
+
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = dataPoints;
+        chart.update();
+    }
+
     async function fetchData() {
         try {
             const userEmail = localStorage.getItem("user_email");
@@ -502,6 +526,7 @@
 
             renderCalendar(globalHeatmapData, currentYear, currentMonth);
             generateInsight(data); // ✅ Tambahkan pemanggilan insight
+            updateMonthlyChart();
         } catch (error) {
             console.error("Error fetching data:", error);
             const insightElement = document.getElementById("insight-text");
