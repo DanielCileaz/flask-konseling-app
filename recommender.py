@@ -23,16 +23,35 @@ emotion_model = pipeline("text-classification", model="j-hartmann/emotion-englis
 HIGH_EMOTION_KEYWORDS = ["anxious", "angry", "lonely", "scared", "afraid", "panic", "hopeless", "depressed", "cry"]
 
 # Pemetaan label emosi
+# Pemetaan label emosi yang diperluas
 EMOTION_MAP = {
     "joy": "positive",
     "love": "positive",
-    "surprise": "neutral",
+    "gratitude": "positive",
+    "hope": "positive",
+    "pride": "positive",
+    "amusement": "positive",
+    "relief": "positive",
+    "contentment": "positive",
+    "surprise": "positive",
+
     "neutral": "neutral",
+    "boredom": "neutral",
+    "curiosity": "neutral",
+    "confusion": "neutral",
+
     "fear": "negative",
     "anger": "negative",
     "sadness": "negative",
-    "disgust": "negative"
+    "disgust": "negative",
+    "guilt": "negative",
+    "shame": "negative",
+    "anxiety": "negative",
+    "frustration": "negative",
+    "loneliness": "negative",
+    "embarrassment": "negative"
 }
+
 
 # Threshold dan label penting
 MIN_SIMILARITY_THRESHOLD = 0.6
